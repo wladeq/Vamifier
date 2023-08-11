@@ -1,0 +1,58 @@
+plugins {
+    id 'idea'
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm' version '1.6.0'
+}
+
+group 'pl.qus'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'pl.qus.wolin.Main'
+    }
+    from {
+        configurations.compile.collect {
+            it.isDirectory()? it: zipTree(it)
+        }
+    }
+}
+
+dependencies {
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0-native-mt'
+//    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.0'
+    implementation 'commons-net:commons-net:20030805.205232'
+    implementation 'com.beust:jcommander:1.82'
+    implementation 'com.google.code.gson:gson:2.8.9'
+    implementation group: 'com.h2database', name: 'h2', version: '1.3.148'
+    implementation 'com.github.Cloudmersive:Cloudmersive.APIClient.Java:v3.54'
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+
+sourceSets {
+    generated {
+        java.srcDir 'generated-src/antlr/main'
+    }
+}
+
+compileKotlin.source sourceSets.generated.java, sourceSets.main.java
+
+idea {
+    module {
+        sourceDirs += file('generated-src/antlr/main')
+    }
+}
